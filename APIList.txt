@@ -1,0 +1,55 @@
+E - Commerce APIs
+
+1. Product Management
+   . Add Products
+   . Get Products
+   . Filter Products
+   . Rate Product
+
+2. User Managemnet
+   . Sign Up
+   . Sign In
+
+3. Cart Management
+   . Add to Cart
+   . Remove From Cart
+   . Get Cart Items
+
+4. Order Management
+   . Place Order
+   . Update Status
+   . Get Status
+
+
+User Controller
+sign up - name , email, password, type of user(seller, customer)
+sign in - email, password
+
+
+show avarage rating for Products
+
+db.products.aggregate([
+   {
+      $unwind:"$ratings"
+   },
+   {
+      $group:{
+         _id:"$name",
+         avarageRatings:{$avg:"$ratings.rating"}
+      }
+   }
+])
+
+db.products.aggregate([
+   {
+      $project:{name:1, countOfRating:{
+         $cond:{if:{$isArray:"$ratings"},
+         then:{$size:"$ratings"}, else:0}}}
+   },
+   {
+      $sort:{countOfRating:-1}
+   },
+   {
+      $limit:1
+   }
+])
